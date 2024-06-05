@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mysite.manage.ManageApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-06-04T12:02:02" hostname="LAPTOP-5QBTGGUL" time="1.376">
+  <properties/>
+  <testcase name="contextLoads()" classname="com.mysite.manage.ManageApplicationTests" time="1.376"/>
+  <system-out><![CDATA[21:02:00.674 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.mysite.manage.ManageApplicationTests]: ManageApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+21:02:00.813 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.mysite.manage.ManageApplication for test class com.mysite.manage.ManageApplicationTests
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.0)
+
+2024-06-04T21:02:01.351+09:00  INFO 14776 --- [manage] [    Test worker] c.mysite.manage.ManageApplicationTests   : Starting ManageApplicationTests using Java 20.0.1 with PID 14776 (started by retur in C:\Users\retur\IdeaProjects\manage)
+2024-06-04T21:02:01.353+09:00  INFO 14776 --- [manage] [    Test worker] c.mysite.manage.ManageApplicationTests   : No active profile set, falling back to 1 default profile: "default"
+2024-06-04T21:02:02.401+09:00  INFO 14776 --- [manage] [    Test worker] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2024-06-04T21:02:02.700+09:00  INFO 14776 --- [manage] [    Test worker] c.mysite.manage.ManageApplicationTests   : Started ManageApplicationTests in 1.648 seconds (process running for 3.38)
+com.mysite.manage.testDTO@36211bbc
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
