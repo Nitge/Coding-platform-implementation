@@ -33,5 +33,9 @@ public class Submission {
         this.status = "SUBMITTED";
     }
 
-    //TODO : 상태 업데이트 함수 작성
+    //TODO : 상태 업데이트 함수 작성(완료)
+    void updateStatus(String status) {
+        this.status = status;
+        updated_at = LocalDateTime.now();
+    }
 }
