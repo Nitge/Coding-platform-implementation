@@ -100,7 +100,7 @@
         const password = document.getElementById('password').value;
         const code = document.getElementById('code').value;
 
-        fetch('https://example.com/manage/submission', {
+        fetch('http://localhost:8080/manage/submission', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -118,7 +118,7 @@
         const password = document.getElementById('check-password').value;
         const id = document.getElementById('id').value;
 
-        fetch(`https://example.com/manage/submission?username=${username}&password=${password}&id=${id}`, {
+        fetch(`http://localhost:8080/manage/submission?username=${username}&password=${password}&id=${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
