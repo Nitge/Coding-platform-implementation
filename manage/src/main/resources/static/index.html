@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Submission and Result Check</title>
+    <title>Login and Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,7 +33,7 @@
             margin: 10px 0 5px;
         }
 
-        input, textarea {
+        input {
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -47,44 +47,85 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
         }
 
         button:hover {
             background-color: #218838;
         }
 
-        #results {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+        .hidden {
+            display: none;
+        }
+
+        #logged-in {
+            text-align: center;
+        }
+
+        .register-btn {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="login-container">
+    <h2>로그인 화면</h2>
+    <form id="login-form">
+        <label for="login-username">Username:</label>
+        <input type="text" id="login-username" name="username" required><br>
+
+        <label for="login-password">Password:</label>
+        <input type="password" id="login-password" name="password" required><br>
+
+        <button type="submit">Login</button>
+    </form>
+    <button id="register-btn" class="register-btn">Register</button>
+</div>
+
+<div class="container hidden" id="register-container">
+    <h2>회원가입</h2>
+    <form id="register-form">
+        <label for="register-username">Username:</label>
+        <input type="text" id="register-username" name="username" required><br>
+
+        <label for="register-password">Password:</label>
+        <input type="password" id="register-password" name="password" required><br>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<div class="container hidden" id="logged-in">
+    <h2>Welcome!</h2>
+    <button id="submit-code-btn">코드 제출 UI</button>
+    <button id="check-result-btn">정답 확인 UI</button>
+</div>
+
+<div class="container hidden" id="submission-container">
     <h2>코드 제출 UI</h2>
     <form id="submission-form">
         <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br>
+        <input type="text" id="submission-username" name="username" readonly><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
+        <input type="password" id="submission-password" name="password" readonly><br>
 
         <label for="code">Code:</label>
         <textarea id="code" name="code" rows="10" cols="30" required></textarea><br>
 
         <button type="submit">Submit</button>
     </form>
+</div>
 
+<div class="container hidden" id="check-container">
     <h2>정답 확인 UI</h2>
     <form id="check-form">
         <label for="check-username">Username:</label>
-        <input type="text" id="check-username" name="username" required><br>
+        <input type="text" id="check-username" name="username" readonly><br>
 
         <label for="check-password">Password:</label>
-        <input type="password" id="check-password" name="password" required><br>
+        <input type="password" id="check-password" name="password" readonly><br>
 
         <label for="id">ID:</label>
         <input type="text" id="id" name="id" required><br>
@@ -93,44 +134,126 @@
     </form>
     <div id="results"></div>
 </div>
-<script>
-    document.getElementById('submission-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const code = document.getElementById('code').value;
 
-        fetch('http://localhost:8080/manage/submission', {
+<script>
+    // 처음에 로그인 화면을 보여줌
+    document.getElementById('login-container').classList.remove('hidden');
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('login-username').value;
+        const password = document.getElementById('login-password').value;
+
+        // 로그인 요청
+        fetch('/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username, password, code })
+            body: JSON.stringify({ username, password })
         })
-            .then(response => response.json())
-            .then(data => alert('Submission successful! ID: ' + data.id))
-            .catch(error => console.error('Error:', error));
-    });
-
-    document.getElementById('check-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const username = document.getElementById('check-username').value;
-        const password = document.getElementById('check-password').value;
-        const id = document.getElementById('id').value;
-
-        fetch(`http://localhost:8080/manage/submission?username=${username}&password=${password}&id=${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => response.json())
+            .then(response => response.text())
             .then(data => {
-                const results = document.getElementById('results');
-                results.innerHTML = `<p>Result: ${data.status}</p>`;
+                if (data === "Login successful") {
+                    // 로그인 성공 시
+                    document.getElementById('login-container').classList.add('hidden');
+                    showWelcomePage(username, password);
+                } else {
+                    // 로그인 실패 시
+                    alert('Login failed. Please check your username and password.');
+                }
             })
             .catch(error => console.error('Error:', error));
     });
+
+    document.getElementById('register-btn').addEventListener('click', function() {
+        document.getElementById('login-container').classList.add('hidden');
+        document.getElementById('register-container').classList.remove('hidden');
+    });
+
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('register-username').value;
+        const password = document.getElementById('register-password').value;
+
+        // 회원가입 요청
+        fetch('/api/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        })
+            .then(response => response.text())
+            .then(data => {
+                if (data === "Registration successful") {
+                    alert('Registration successful! Please log in.');
+                    document.getElementById('register-container').classList.add('hidden');
+                    document.getElementById('login-container').classList.remove('hidden');
+                } else {
+                    alert('Registration failed. Please try again.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    function showWelcomePage(username, password) {
+        document.getElementById('logged-in').classList.remove('hidden');
+        document.getElementById('submit-code-btn').onclick = () => loadSubmissionUI(username, password);
+        document.getElementById('check-result-btn').onclick = () => loadCheckUI(username, password);
+    }
+
+    function loadSubmissionUI(username, password) {
+        document.getElementById('logged-in').classList.add('hidden');
+        document.getElementById('submission-container').classList.remove('hidden');
+        document.getElementById('submission-username').value = username;
+        document.getElementById('submission-password').value = password;
+
+        document.getElementById('submission-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = document.getElementById('code').value;
+
+            fetch('/manage/submission', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password, code })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Submission successful! ID: ' + data.id);
+                    document.getElementById('submission-container').classList.add('hidden');
+                    document.getElementById('logged-in').classList.remove('hidden');
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
+
+    function loadCheckUI(username, password) {
+        document.getElementById('logged-in').classList.add('hidden');
+        document.getElementById('check-container').classList.remove('hidden');
+        document.getElementById('check-username').value = username;
+        document.getElementById('check-password').value = password;
+
+        document.getElementById('check-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('id').value;
+
+            fetch(`/manage/submission?username=${username}&password=${password}&id=${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const results = document.getElementById('results');
+                    results.innerHTML = `<p>Result: ${data.status}</p>`;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    }
 </script>
 </body>
 </html>
